@@ -15,18 +15,36 @@ function generateCodeExample(
   endpoint: string,
   method: string,
   selectedKey: string,
-  requestBody: string
+  requestBody: string,
 ): string {
+  let parsedBody: Record<string, any> = {};
+  try {
+    parsedBody = JSON.parse(requestBody);
+  } catch {
+    parsedBody = {};
+  }
+
+  // Add apiKey to body for GitHub Summarizer endpoint
+  if (
+    endpoint === "/api/github-summarizer" ||
+    endpoint.includes("github-summarizer")
+  ) {
+    parsedBody.apiKey = selectedKey || "YOUR_API_KEY";
+  }
+
+  const bodyString = JSON.stringify(parsedBody, null, 2)
+    .split("\n")
+    .join("\n  ");
+
   return `// JavaScript/Node.js Example
 const response = await fetch('http://localhost:3000${endpoint}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key': '${selectedKey || "YOUR_API_KEY"}'
   },${
     method !== "GET"
       ? `
-  body: JSON.stringify(${requestBody})`
+  body: JSON.stringify(${bodyString})`
       : ""
   }
 });

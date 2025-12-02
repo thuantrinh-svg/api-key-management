@@ -60,11 +60,11 @@ export default function DashboardPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDialogSubmit = async (name: string) => {
+  const handleDialogSubmit = async (name: string, limit: number) => {
     if (dialogMode === "create") {
-      await createApiKey(name);
+      await createApiKey(name, limit);
     } else if (editingKey) {
-      await updateApiKey(editingKey.id, name);
+      await updateApiKey(editingKey.id, name, limit);
     }
   };
 
@@ -78,7 +78,9 @@ export default function DashboardPage() {
     }
   };
 
+  // Calculate total usage and total limit from all API keys
   const totalUsage = apiKeys.reduce((sum, key) => sum + key.usage_count, 0);
+  const totalLimit = apiKeys.reduce((sum, key) => sum + key.limit, 0) || 1000;
 
   return (
     <DashboardLayout>
@@ -88,7 +90,7 @@ export default function DashboardPage() {
 
           {/* Current Plan Card */}
           <div className="mb-8 md:mb-10">
-            <ApiKeyCard usageCount={totalUsage} usageLimit={1000} />
+            <ApiKeyCard usageCount={totalUsage} usageLimit={totalLimit} />
           </div>
 
           {/* API Keys Section */}

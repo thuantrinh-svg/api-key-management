@@ -35,13 +35,21 @@ function ApiKeyTableRow({
   onEdit,
   onDelete,
 }: ApiKeyRowProps) {
+  const remaining = apiKey.limit - apiKey.usage_count;
+  const usagePercentage = (apiKey.usage_count / apiKey.limit) * 100;
+
   return (
     <tr className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">
       <td className="whitespace-nowrap px-4 md:px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
         {apiKey.name}
       </td>
       <td className="whitespace-nowrap px-4 md:px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-        {apiKey.usage_count}
+        <div className="flex flex-col">
+          <span className="font-medium">
+            {apiKey.usage_count} / {apiKey.limit}
+          </span>
+          <span className="text-xs text-gray-400">{remaining} remaining</span>
+        </div>
       </td>
       <td className="hidden md:table-cell px-6 py-4 text-sm font-mono text-gray-700 dark:text-gray-300 truncate max-w-xs">
         {maskKey(apiKey.key, isVisible)}
@@ -119,6 +127,9 @@ function ApiKeyCardItem({
   onEdit,
   onDelete,
 }: ApiKeyCardItemProps) {
+  const remaining = apiKey.limit - apiKey.usage_count;
+  const usagePercentage = (apiKey.usage_count / apiKey.limit) * 100;
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
       <div className="mb-4 flex items-center justify-between">
@@ -157,10 +168,26 @@ function ApiKeyCardItem({
 
         <div>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-            Usage
+            Quota Usage
           </p>
           <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-            {apiKey.usage_count} requests
+            {apiKey.usage_count} / {apiKey.limit} requests
+          </p>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+            <div
+              className={cn(
+                "h-full rounded-full transition-all duration-300",
+                usagePercentage <= 50 && "bg-green-500",
+                usagePercentage > 50 &&
+                  usagePercentage <= 80 &&
+                  "bg-yellow-500",
+                usagePercentage > 80 && "bg-red-500",
+              )}
+              style={{ width: `${Math.min(usagePercentage, 100)}%` }}
+            />
+          </div>
+          <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+            {remaining} requests remaining
           </p>
         </div>
       </div>
@@ -244,7 +271,7 @@ export function ApiKeyTable({
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                Usage
+                Usage / Limit
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Key

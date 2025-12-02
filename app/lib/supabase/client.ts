@@ -10,7 +10,7 @@ export type ApiKey = {
   name: string;
   key: string;
   usage_count: number;
+  limit: number;
   created_at: string;
   user_id: string;
 };
-

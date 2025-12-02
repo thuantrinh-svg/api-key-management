@@ -25,7 +25,7 @@ export async function GET() {
       console.error("Error fetching API keys:", error);
       return NextResponse.json(
         { error: "Failed to fetch API keys" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -34,7 +34,7 @@ export async function GET() {
     console.error("Unexpected error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -42,12 +42,19 @@ export async function GET() {
 // POST - Create a new API key
 export async function POST(request: Request) {
   try {
-    const { name } = await request.json();
+    const { name, limit = 1000 } = await request.json();
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       return NextResponse.json(
         { error: "Name is required and must be a non-empty string" },
-        { status: 400 }
+        { status: 400 },
+      );
+    }
+
+    if (typeof limit !== "number" || limit < 1) {
+      return NextResponse.json(
+        { error: "Limit must be a positive number" },
+        { status: 400 },
       );
     }
 
@@ -60,6 +67,7 @@ export async function POST(request: Request) {
           name: name.trim(),
           key: newKey,
           usage_count: 0,
+          limit,
           user_id: "00000000-0000-0000-0000-000000000000", // Placeholder for demo
         },
       ])
@@ -70,7 +78,7 @@ export async function POST(request: Request) {
       console.error("Error creating API key:", error);
       return NextResponse.json(
         { error: "Failed to create API key" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -79,8 +87,7 @@ export async function POST(request: Request) {
     console.error("Unexpected error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

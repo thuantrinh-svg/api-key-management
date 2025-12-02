@@ -36,70 +36,76 @@ export function useApiKeys() {
   }, []);
 
   // Create a new API key
-  const createApiKey = useCallback(async (name: string) => {
-    try {
-      const response = await fetch("/api/api-keys", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-      });
+  const createApiKey = useCallback(
+    async (name: string, limit: number = 1000) => {
+      try {
+        const response = await fetch("/api/api-keys", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, limit }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create API key");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to create API key");
+        }
+
+        const data = await response.json();
+        setApiKeys((prev) => [data, ...prev]);
+        toast.success("API key created successfully", {
+          description: `Key "${name}" has been created`,
+        });
+
+        return data;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create API key";
+        toast.error("Failed to create API key", {
+          description: errorMessage,
+        });
+        throw err;
       }
-
-      const data = await response.json();
-      setApiKeys((prev) => [data, ...prev]);
-      toast.success("API key created successfully", {
-        description: `Key "${name}" has been created`,
-      });
-
-      return data;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to create API key";
-      toast.error("Failed to create API key", {
-        description: errorMessage,
-      });
-      throw err;
-    }
-  }, []);
+    },
+    [],
+  );
 
   // Update an API key
-  const updateApiKey = useCallback(async (id: string, name: string) => {
-    try {
-      const response = await fetch(`/api/api-keys/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-      });
+  const updateApiKey = useCallback(
+    async (id: string, name: string, limit: number = 1000) => {
+      try {
+        const response = await fetch(`/api/api-keys/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, limit }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update API key");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to update API key");
+        }
+
+        const data = await response.json();
+        setApiKeys((prev) => prev.map((key) => (key.id === id ? data : key)));
+        toast.success("API key updated successfully", {
+          description: `Key renamed to "${name}"`,
+        });
+
+        return data;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update API key";
+        toast.error("Failed to update API key", {
+          description: errorMessage,
+        });
+        throw err;
       }
-
-      const data = await response.json();
-      setApiKeys((prev) => prev.map((key) => (key.id === id ? data : key)));
-      toast.success("API key updated successfully", {
-        description: `Key renamed to "${name}"`,
-      });
-
-      return data;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to update API key";
-      toast.error("Failed to update API key", {
-        description: errorMessage,
-      });
-      throw err;
-    }
-  }, []);
+    },
+    [],
+  );
 
   // Delete an API key
   const deleteApiKey = useCallback(
@@ -131,7 +137,7 @@ export function useApiKeys() {
         throw err;
       }
     },
-    [apiKeys]
+    [apiKeys],
   );
 
   // Copy API key to clipboard
@@ -146,7 +152,7 @@ export function useApiKeys() {
         toast.error("Failed to copy", {
           description: "Could not copy API key to clipboard",
         });
-      }
+      },
     );
   }, []);
 
@@ -166,4 +172,3 @@ export function useApiKeys() {
     copyToClipboard,
   };
 }
-

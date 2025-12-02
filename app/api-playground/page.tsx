@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Code } from "lucide-react";
 import { useApiKeys } from "../hooks/useApiKeys";
 import DashboardLayout from "../dashboard-layout";
 import { toast } from "sonner";
 import { RequestPanel } from "./components/RequestPanel";
 import { ResponsePanel } from "./components/ResponsePanel";
-import { CodeExample } from "./components/CodeExample";
 
 export default function ApiPlayground() {
-  const { apiKeys } = useApiKeys();
+  const { apiKeys, fetchApiKeys } = useApiKeys();
   const [selectedKey, setSelectedKey] = useState("");
   const [endpoint, setEndpoint] = useState("/api/github-summarizer");
   const [method, setMethod] = useState("POST");
@@ -19,11 +18,9 @@ export default function ApiPlayground() {
   );
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
-  const [copiedResponse, setCopiedResponse] = useState(false);
   const [activeTab, setActiveTab] = useState<"custom" | "github">("github");
 
-  const handleExecute = async () => {
+  const handleExecute = useCallback(async () => {
     if (!selectedKey) {
       toast.error("Please select an API key");
       return;
@@ -33,20 +30,29 @@ export default function ApiPlayground() {
     setResponse("");
 
     try {
-      let body: string;
+      let parsedBody: Record<string, any>;
       try {
-        body = JSON.stringify(JSON.parse(requestBody));
+        parsedBody = JSON.parse(requestBody);
       } catch {
         toast.error("Invalid JSON in request body");
         setIsLoading(false);
         return;
       }
 
+      // Add apiKey to the request body for GitHub Summarizer endpoint
+      if (
+        endpoint === "/api/github-summarizer" ||
+        endpoint.includes("github-summarizer")
+      ) {
+        parsedBody.apiKey = selectedKey;
+      }
+
+      const body = JSON.stringify(parsedBody);
+
       const apiResponse = await fetch(endpoint, {
         method,
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": selectedKey,
         },
         body: method !== "GET" ? body : undefined,
       });
@@ -61,6 +67,9 @@ export default function ApiPlayground() {
       } else {
         setResponse(JSON.stringify(data, null, 2));
         toast.success("Request successful!");
+
+        // Refresh API keys to update quota display in real-time
+        await fetchApiKeys();
       }
     } catch (error) {
       const errorMessage =
@@ -70,38 +79,49 @@ export default function ApiPlayground() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const copyCode = () => {
-    const code = generateCodeExample();
-    navigator.clipboard.writeText(code);
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
-  };
-
-  const copyResponse = () => {
-    navigator.clipboard.writeText(response);
-    setCopiedResponse(true);
-    setTimeout(() => setCopiedResponse(false), 2000);
-  };
+  }, [selectedKey, requestBody, endpoint, method, fetchApiKeys]);
 
   const generateCodeExample = () => {
+    let parsedBody: Record<string, any> = {};
+    try {
+      parsedBody = JSON.parse(requestBody);
+    } catch {
+      parsedBody = {};
+    }
+
+    // Add apiKey to code example for GitHub Summarizer
+    if (
+      endpoint === "/api/github-summarizer" ||
+      endpoint.includes("github-summarizer")
+    ) {
+      parsedBody.apiKey = selectedKey || "YOUR_API_KEY";
+    }
+
     return `// JavaScript/Node.js Example
 const response = await fetch('http://localhost:3000${endpoint}', {
   method: '${method}',
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key': '${selectedKey || "YOUR_API_KEY"}'
   },${
     method !== "GET"
       ? `
-  body: JSON.stringify(${requestBody})`
+  body: JSON.stringify(${JSON.stringify(parsedBody, null, 2).split("\n").join("\n  ")})`
       : ""
   }
 });
 
 const data = await response.json();
 console.log(data);`;
+  };
+
+  const copyCode = () => {
+    navigator.clipboard.writeText(generateCodeExample());
+    toast.success("Code copied to clipboard!");
+  };
+
+  const copyResponse = () => {
+    navigator.clipboard.writeText(response);
+    toast.success("Response copied to clipboard!");
   };
 
   return (
@@ -122,58 +142,84 @@ console.log(data);`;
             </p>
           </div>
 
-          {/* Layout: Stack on mobile, Grid on desktop */}
-          <div className="grid gap-6 lg:grid-cols-2 auto-rows-max lg:auto-rows-auto">
-            {/* Request Panel */}
-            <div className="lg:max-h-screen lg:overflow-y-auto">
-              <RequestPanel
-                apiKeys={apiKeys}
-                selectedKey={selectedKey}
-                endpoint={endpoint}
-                method={method}
-                requestBody={requestBody}
-                activeTab={activeTab}
-                isLoading={isLoading}
-                onSelectedKeyChange={setSelectedKey}
-                onEndpointChange={setEndpoint}
-                onMethodChange={setMethod}
-                onRequestBodyChange={setRequestBody}
-                onActiveTabChange={setActiveTab}
-                onExecute={handleExecute}
-              />
-
-              {/* Code Example - Show below request on mobile, alongside response on desktop */}
-              <div className="mt-6 md:mt-0 lg:hidden">
-                <CodeExample
+          {/* Main Layout: 3 columns on desktop, stacked on mobile */}
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Request Panel - Left Column (1/3) */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-6">
+                <RequestPanel
+                  apiKeys={apiKeys}
+                  selectedKey={selectedKey}
                   endpoint={endpoint}
                   method={method}
-                  selectedKey={selectedKey}
                   requestBody={requestBody}
-                  onCopy={copyCode}
-                  copied={copiedCode}
+                  activeTab={activeTab}
+                  isLoading={isLoading}
+                  onSelectedKeyChange={setSelectedKey}
+                  onEndpointChange={setEndpoint}
+                  onMethodChange={setMethod}
+                  onRequestBodyChange={setRequestBody}
+                  onActiveTabChange={setActiveTab}
+                  onExecute={handleExecute}
                 />
               </div>
             </div>
 
-            {/* Response Panel */}
-            <div className="flex flex-col gap-6 lg:max-h-screen lg:overflow-y-auto">
-              <ResponsePanel
-                response={response}
-                isLoading={isLoading}
-                onCopy={copyResponse}
-                copied={copiedResponse}
-              />
-
-              {/* Code Example - Show on desktop */}
-              <div className="hidden lg:block">
-                <CodeExample
-                  endpoint={endpoint}
-                  method={method}
-                  selectedKey={selectedKey}
-                  requestBody={requestBody}
-                  onCopy={copyCode}
-                  copied={copiedCode}
+            {/* Response Panel - Right Column (2/3) */}
+            <div className="lg:col-span-2">
+              <div className="sticky top-6 space-y-6">
+                {/* Response Section */}
+                <ResponsePanel
+                  response={response}
+                  isLoading={isLoading}
+                  onCopy={copyResponse}
+                  copied={false}
                 />
+
+                {/* Code Example - Collapsible section */}
+                <details className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950 group">
+                  <summary className="cursor-pointer flex items-center justify-between font-semibold text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                    <span className="flex items-center gap-2">
+                      <span className="group-open:rotate-90 transition-transform inline-block">
+                        ▶
+                      </span>
+                      Code Example
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        copyCode();
+                      }}
+                      className="rounded-lg bg-gray-100 px-3 py-1 text-xs text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                    >
+                      📋 Copy
+                    </button>
+                  </summary>
+                  <div className="mt-4">
+                    <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 max-h-96">
+                      <code>{generateCodeExample()}</code>
+                    </pre>
+                  </div>
+                </details>
+
+                {/* Curl Example - Collapsible section */}
+                <details className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950 group">
+                  <summary className="cursor-pointer flex items-center justify-between font-semibold text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                    <span className="flex items-center gap-2">
+                      <span className="group-open:rotate-90 transition-transform inline-block">
+                        ▶
+                      </span>
+                      Curl Example
+                    </span>
+                  </summary>
+                  <div className="mt-4">
+                    <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100">
+                      <code>{`curl -X ${method} http://localhost:3000${endpoint} \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify({ ...JSON.parse(requestBody), apiKey: "YOUR_API_KEY" }, null, 2)}'`}</code>
+                    </pre>
+                  </div>
+                </details>
               </div>
             </div>
           </div>

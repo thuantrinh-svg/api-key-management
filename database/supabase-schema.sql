@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
   name TEXT NOT NULL,
   key TEXT UNIQUE NOT NULL,
   usage_count INTEGER DEFAULT 0,
+  "limit" INTEGER DEFAULT 1000,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   user_id UUID NULL  -- Nullable for demo/testing without auth
 );
@@ -41,4 +42,3 @@ CREATE POLICY "Users can delete their own API keys"
   ON api_keys FOR DELETE
   USING (auth.uid() = user_id);
 */
-

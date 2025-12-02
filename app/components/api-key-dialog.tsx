@@ -8,7 +8,7 @@ import { type ApiKey } from "@/app/lib/supabase/client";
 interface ApiKeyDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (name: string) => Promise<void>;
+  onSubmit: (name: string, limit: number) => Promise<void>;
   editingKey?: ApiKey | null;
   mode: "create" | "edit";
 }
@@ -21,22 +21,26 @@ export function ApiKeyDialog({
   mode,
 }: ApiKeyDialogProps) {
   const [name, setName] = useState("");
+  const [limit, setLimit] = useState(1000);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setName(editingKey?.name || "");
+      setLimit(editingKey?.limit || 1000);
     }
   }, [isOpen, editingKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
+    if (limit < 1) return;
 
     setIsSubmitting(true);
     try {
-      await onSubmit(name.trim());
+      await onSubmit(name.trim(), limit);
       setName("");
+      setLimit(1000);
       onClose();
     } catch (error) {
       // Error is handled by the hook with toast
@@ -49,6 +53,7 @@ export function ApiKeyDialog({
   const handleClose = () => {
     if (!isSubmitting) {
       setName("");
+      setLimit(1000);
       onClose();
     }
   };
@@ -104,6 +109,36 @@ export function ApiKeyDialog({
             />
           </div>
 
+          <div className="mb-6">
+            <label
+              htmlFor="key-limit"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Request Limit
+            </label>
+            <input
+              id="key-limit"
+              type="number"
+              min="1"
+              value={limit}
+              onChange={(e) =>
+                setLimit(Math.max(1, parseInt(e.target.value) || 1))
+              }
+              placeholder="e.g., 1000"
+              className={cn(
+                "w-full rounded-lg border border-gray-300 px-4 py-2 md:py-3",
+                "bg-white text-gray-900 placeholder-gray-400 text-sm md:text-base",
+                "focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20",
+                "dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-500",
+              )}
+              required
+              disabled={isSubmitting}
+            />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Maximum number of requests allowed for this API key
+            </p>
+          </div>
+
           <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-6">
             <button
               type="button"
@@ -120,7 +155,7 @@ export function ApiKeyDialog({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting || !name.trim()}
+              disabled={isSubmitting || !name.trim() || limit < 1}
               className={cn(
                 "rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white w-full sm:w-auto",
                 "transition-colors hover:bg-purple-700",
