@@ -4,11 +4,11 @@ AI-powered tool that analyzes GitHub repositories and provides intelligent summa
 
 ## Features
 
-- 📖 **README Analysis** - Automatically fetches and analyzes README files
-- 🤖 **AI Summary** - Uses OpenAI GPT-4 to generate concise summaries
-- 📊 **Repository Metadata** - Extracts stars, versions, website, and license info
-- 🎯 **Cool Facts** - Identifies interesting features and facts about repositories
-- 🔌 **API Playground Integration** - Test directly in the interactive playground
+- **README Analysis** - Automatically fetches and analyzes README files
+- **AI Summary** - Uses OpenAI GPT-4 to generate concise summaries
+- **Repository Metadata** - Extracts stars, versions, website, and license info
+- **Cool Facts** - Identifies interesting features and facts about repositories
+- **API Playground Integration** - Test directly in the interactive playground
 
 ## Setup
 
