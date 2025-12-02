@@ -4,13 +4,13 @@ import { supabase } from "@/app/lib/supabase/client";
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   console.warn(
-    "Google OAuth credentials not configured. Sign in will not work."
+    "Google OAuth credentials not configured. Sign in will not work.",
   );
 }
 
 if (!process.env.NEXTAUTH_SECRET) {
   console.warn(
-    "NEXTAUTH_SECRET not configured. Using a default secret (not recommended for production)."
+    "NEXTAUTH_SECRET not configured. Using a default secret (not recommended for production).",
   );
 }
 
@@ -25,6 +25,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
     error: "/auth/error",
   },
+  redirectProxyUrl: "/api/auth/callback",
   events: {
     async signIn({ user }) {
       try {
@@ -90,4 +91,3 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-

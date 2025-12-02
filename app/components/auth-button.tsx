@@ -1,9 +1,11 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { LogOut, LogIn, User } from "lucide-react";
 
 export function AuthButton() {
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -39,7 +41,9 @@ export function AuthButton() {
           </div>
         </div>
         <button
-          onClick={() => signOut()}
+          onClick={() =>
+            signOut({ redirect: false }).then(() => router.push("/"))
+          }
           className="flex items-center gap-2 rounded-lg bg-red-100 px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-200 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900"
         >
           <LogOut className="h-4 w-4" />
@@ -59,4 +63,3 @@ export function AuthButton() {
     </button>
   );
 }
-

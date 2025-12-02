@@ -284,68 +284,76 @@ X-RateLimit-Reset: 1640995200`}</code>
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen w-full p-4 md:p-6 lg:p-8">
         <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <BookOpen className="h-8 w-8 text-purple-600" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <div className="mb-6 md:mb-8">
+          <div className="flex items-center gap-2 md:gap-3 mb-2">
+            <BookOpen className="h-6 md:h-8 w-6 md:w-8 text-purple-600 shrink-0" />
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
               Documentation
             </h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">
-            Everything you need to know about integrating and using the API Key Management system.
+          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+            Complete guide to the API Key Management system
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-4">
+        <div className="grid gap-4 md:gap-6 lg:grid-cols-4">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1">
-            <nav className="space-y-1">
+            <nav className="space-y-1 hidden lg:block">
               {sections.map((section) => {
                 const Icon = section.icon;
                 return (
                   <button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
-                    className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors ${
+                    className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
                       activeSection === section.id
                         ? "bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-400"
                         : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-900"
                     }`}
                   >
-                    <Icon className="h-5 w-5" />
-                    <span className="flex-1 font-medium">{section.title}</span>
-                    <ChevronRight className="h-4 w-4" />
+                    <Icon className="h-5 w-5 shrink-0" />
+                    <span className="flex-1">{section.title}</span>
+                    <ChevronRight className="h-4 w-4 shrink-0" />
                   </button>
                 );
               })}
             </nav>
+            <select
+              value={activeSection}
+              onChange={(e) => setActiveSection(e.target.value)}
+              className="w-full px-3 py-2 text-sm border rounded-lg lg:hidden dark:bg-gray-800 dark:border-gray-700"
+            >
+              {sections.map((section) => (
+                <option key={section.id} value={section.id}>{section.title}</option>
+              ))}
+            </select>
           </div>
 
           {/* Content Area */}
           <div className="lg:col-span-3">
-            <div className="rounded-lg border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-950">
+            <div className="rounded-lg border border-gray-200 bg-white p-4 md:p-6 lg:p-8 dark:border-gray-800 dark:bg-gray-950 text-sm md:text-base">
               {activeContent}
             </div>
           </div>
         </div>
 
         {/* Support Section */}
-        <div className="mt-12 rounded-lg border border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 p-8 dark:border-gray-800 dark:from-purple-950 dark:to-blue-950">
-          <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="mt-8 md:mt-12 rounded-lg border border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 p-4 md:p-6 lg:p-8 dark:border-gray-800 dark:from-purple-950 dark:to-blue-950">
+          <h2 className="mb-2 text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
             Need Help?
           </h2>
-          <p className="mb-6 text-gray-600 dark:text-gray-400">
-            Can&apos;t find what you&apos;re looking for? Our support team is here to
-            help.
+          <p className="mb-4 md:mb-6 text-xs md:text-sm text-gray-600 dark:text-gray-400">
+            Can&apos;t find what you&apos;re looking for? Our support team is here to help.
           </p>
-          <div className="flex gap-4">
-            <button className="rounded-lg bg-purple-600 px-6 py-3 font-medium text-white transition-colors hover:bg-purple-700">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button className="rounded-lg bg-purple-600 px-4 md:px-6 py-2 md:py-3 text-sm font-medium text-white transition-colors hover:bg-purple-700 whitespace-nowrap">
               Contact Support
             </button>
-            <button className="rounded-lg border border-gray-300 bg-white px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800">
+            <button className="rounded-lg border border-gray-300 bg-white px-4 md:px-6 py-2 md:py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 whitespace-nowrap">
               Join Community
             </button>
           </div>

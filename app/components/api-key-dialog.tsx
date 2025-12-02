@@ -57,15 +57,15 @@ export function ApiKeyDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={handleClose}
     >
       <div
-        className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-950"
+        className="w-full max-w-md rounded-lg bg-white p-4 md:p-6 shadow-xl dark:bg-gray-950"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white truncate">
             {mode === "create" ? "Create New API Key" : "Edit API Key"}
           </h2>
           <button
@@ -84,7 +84,7 @@ export function ApiKeyDialog({
               htmlFor="key-name"
               className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-              Key Name
+              API Key Name
             </label>
             <input
               id="key-name"
@@ -93,10 +93,10 @@ export function ApiKeyDialog({
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Production API Key"
               className={cn(
-                "w-full rounded-lg border border-gray-300 px-4 py-2",
-                "bg-white text-gray-900 placeholder-gray-400",
+                "w-full rounded-lg border border-gray-300 px-4 py-2 md:py-3",
+                "bg-white text-gray-900 placeholder-gray-400 text-sm md:text-base",
                 "focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20",
-                "dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-500"
+                "dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder-gray-500",
               )}
               required
               disabled={isSubmitting}
@@ -104,16 +104,16 @@ export function ApiKeyDialog({
             />
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-6">
             <button
               type="button"
               onClick={handleClose}
               disabled={isSubmitting}
               className={cn(
-                "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium",
+                "rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium w-full sm:w-auto",
                 "text-gray-700 transition-colors hover:bg-gray-50",
                 "dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-900",
-                "disabled:cursor-not-allowed disabled:opacity-50"
+                "disabled:cursor-not-allowed disabled:opacity-50",
               )}
             >
               Cancel
@@ -122,9 +122,9 @@ export function ApiKeyDialog({
               type="submit"
               disabled={isSubmitting || !name.trim()}
               className={cn(
-                "rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white",
+                "rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white w-full sm:w-auto",
                 "transition-colors hover:bg-purple-700",
-                "disabled:cursor-not-allowed disabled:opacity-50"
+                "disabled:cursor-not-allowed disabled:opacity-50",
               )}
             >
               {isSubmitting
@@ -132,8 +132,8 @@ export function ApiKeyDialog({
                   ? "Creating..."
                   : "Updating..."
                 : mode === "create"
-                ? "Create Key"
-                : "Update Key"}
+                  ? "Create Key"
+                  : "Update Key"}
             </button>
           </div>
         </form>
@@ -141,4 +141,3 @@ export function ApiKeyDialog({
     </div>
   );
 }
-
