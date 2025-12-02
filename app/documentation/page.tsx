@@ -24,7 +24,7 @@ export default function Documentation() {
             Getting Started
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Welcome to the Távily AI API documentation. This guide will help you
+            Welcome to the API Key Management documentation. This guide will help you
             get started with our API in just a few minutes.
           </p>
 
@@ -269,7 +269,7 @@ X-RateLimit-Reset: 1640995200`}</code>
               Rate Limit Exceeded
             </h3>
             <p className="text-sm text-red-800 dark:text-red-400">
-              If you exceed your rate limit, you'll receive a 429 status code.
+              If you exceed your rate limit, you&apos;ll receive a 429 status code.
               Please wait until your limit resets or upgrade your plan.
             </p>
           </div>
@@ -293,8 +293,7 @@ X-RateLimit-Reset: 1640995200`}</code>
             </h1>
           </div>
           <p className="text-gray-600 dark:text-gray-400">
-            Everything you need to know about integrating and using the Távily
-            AI API.
+            Everything you need to know about integrating and using the API Key Management system.
           </p>
         </div>
 
@@ -337,7 +336,7 @@ X-RateLimit-Reset: 1640995200`}</code>
             Need Help?
           </h2>
           <p className="mb-6 text-gray-600 dark:text-gray-400">
-            Can't find what you're looking for? Our support team is here to
+            Can&apos;t find what you&apos;re looking for? Our support team is here to
             help.
           </p>
           <div className="flex gap-4">

@@ -60,7 +60,7 @@ export function Sidebar() {
         {/* Logo/Brand */}
         <div className="flex h-16 items-center border-b border-gray-200 px-6 dark:border-gray-800">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-            Távily AI
+            API Key Management
           </h1>
         </div>
 

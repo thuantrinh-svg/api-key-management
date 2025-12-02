@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Távily AI - API Key Management",
-  description: "Manage your API keys for Távily AI Research API",
+  title: "API Key Management",
+  description: "Manage your API keys for Research API",
 };
 
 export default function RootLayout({
