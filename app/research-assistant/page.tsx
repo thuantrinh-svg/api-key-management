@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Search, Sparkles, TrendingUp, Users, GitBranch } from "lucide-react";
+import DashboardLayout from "../dashboard-layout";
 
 export default function ResearchAssistant() {
   const [query, setQuery] = useState("");
@@ -26,8 +27,9 @@ export default function ResearchAssistant() {
   ];
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mx-auto max-w-7xl">
+    <DashboardLayout>
+      <div className="min-h-screen p-8">
+        <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -148,7 +150,8 @@ export default function ResearchAssistant() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
 

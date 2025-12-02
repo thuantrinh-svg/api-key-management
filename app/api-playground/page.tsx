@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Code, Play, Copy, Check, Github } from "lucide-react";
 import { useApiKeys } from "../hooks/useApiKeys";
+import DashboardLayout from "../dashboard-layout";
 import { toast } from "sonner";
 
 export default function ApiPlayground() {
@@ -100,8 +101,9 @@ console.log(data);`;
   };
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mx-auto max-w-7xl">
+    <DashboardLayout>
+      <div className="min-h-screen p-8">
+        <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -345,8 +347,9 @@ console.log(data);`;
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
 

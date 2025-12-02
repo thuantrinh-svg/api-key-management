@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BookOpen, ChevronRight, Code, Key, Zap, Shield } from "lucide-react";
+import DashboardLayout from "../dashboard-layout";
 
 type Section = {
   id: string;
@@ -282,8 +283,9 @@ X-RateLimit-Reset: 1640995200`}</code>
     sections.find((s) => s.id === activeSection)?.content || null;
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mx-auto max-w-7xl">
+    <DashboardLayout>
+      <div className="min-h-screen p-8">
+        <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -349,7 +351,8 @@ X-RateLimit-Reset: 1640995200`}</code>
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
 

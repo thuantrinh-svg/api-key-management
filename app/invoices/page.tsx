@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FileCheck, Download, Eye, CreditCard, Calendar } from "lucide-react";
+import DashboardLayout from "../dashboard-layout";
 
 type Invoice = {
   id: string;
@@ -87,8 +88,9 @@ export default function Invoices() {
     .reduce((sum, inv) => sum + inv.amount, 0);
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mx-auto max-w-7xl">
+    <DashboardLayout>
+      <div className="min-h-screen p-8">
+        <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -268,7 +270,8 @@ export default function Invoices() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
 

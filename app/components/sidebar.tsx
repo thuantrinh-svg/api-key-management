@@ -15,7 +15,7 @@ import { cn } from "@/app/lib/utils";
 const navigationItems = [
   {
     name: "Overview",
-    href: "/",
+    href: "/dashboard",
     icon: Home,
     enabled: true,
   },

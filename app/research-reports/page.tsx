@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FileText, Calendar, Download, Eye, Filter } from "lucide-react";
+import DashboardLayout from "../dashboard-layout";
 
 type Report = {
   id: string;
@@ -86,8 +87,9 @@ export default function ResearchReports() {
       : reports.filter((report) => report.status === selectedFilter);
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mx-auto max-w-7xl">
+    <DashboardLayout>
+      <div className="min-h-screen p-8">
+        <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -223,7 +225,8 @@ export default function ResearchReports() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
 
