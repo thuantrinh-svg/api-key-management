@@ -4,13 +4,15 @@ import { supabase } from "@/app/lib/supabase/client";
 // GET - Fetch a single API key
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     const { data, error } = await supabase
       .from("api_keys")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", id)
       .single();
 
     if (error) {
@@ -34,9 +36,10 @@ export async function GET(
 // PUT - Update an API key
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { name } = await request.json();
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -49,7 +52,7 @@ export async function PUT(
     const { data, error } = await supabase
       .from("api_keys")
       .update({ name: name.trim() })
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single();
 
@@ -81,13 +84,15 @@ export async function PUT(
 // DELETE - Delete an API key
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     const { error } = await supabase
       .from("api_keys")
       .delete()
-      .eq("id", params.id);
+      .eq("id", id);
 
     if (error) {
       console.error("Error deleting API key:", error);
