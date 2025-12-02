@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# API Key Management System
 
-## Getting Started
+A modern, full-featured API Key Management system built with Next.js 16, Supabase, and Tailwind CSS.
 
-First, run the development server:
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+
+## Features
+
+- 🔐 **Secure API Routes** - All database operations through protected endpoints
+- 🎨 **Modern UI** - Beautiful gradient design with dark mode support
+- 📊 **Complete Dashboard** - 6 full-featured pages (Overview, Research Assistant, Reports, Playground, Invoices, Documentation)
+- 🔑 **Full CRUD** - Create, read, update, delete API keys with toast notifications
+- 🎯 **Interactive Playground** - Test API endpoints with live code generation
+- 📱 **Responsive Design** - Works seamlessly on all devices
+
+## Quick Start
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure Supabase
+
+Create `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+### 3. Setup Database
+
+Run the SQL from `database/supabase-schema.sql` in your Supabase SQL Editor.
+
+### 4. Start Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+api-key-management/
+├── app/
+│   ├── api/                    # Secure API routes
+│   ├── components/             # Reusable UI components
+│   ├── hooks/                  # Custom React hooks
+│   ├── lib/                    # Utilities & Supabase client
+│   ├── [pages]/                # Application pages
+│   └── layout.tsx              # Root layout
+├── database/                   # SQL schemas & migrations
+├── docs/                       # Detailed documentation
+└── README.md                   # This file
+```
 
-## Learn More
+## Documentation
 
-To learn more about Next.js, take a look at the following resources:
+- **[Quick Start Guide](docs/QUICKSTART.md)** - Get started in 5 minutes
+- **[Setup Guide](docs/SETUP.md)** - Detailed setup instructions
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Framework:** Next.js 16 (App Router)
+- **Database:** Supabase (PostgreSQL)
+- **Styling:** Tailwind CSS
+- **Language:** TypeScript
+- **UI:** Custom components with Lucide icons
+- **Notifications:** Sonner
 
-## Deploy on Vercel
+## Available Pages
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Page | Path | Description |
+|------|------|-------------|
+| Overview | `/` | API key management dashboard |
+| Research Assistant | `/research-assistant` | AI-powered research interface |
+| Research Reports | `/research-reports` | Report management with filters |
+| API Playground | `/api-playground` | Interactive API testing |
+| Invoices | `/invoices` | Billing history |
+| Documentation | `/documentation` | API documentation |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Security
+
+- API routes protect database credentials
+- Input validation on all endpoints
+- Supabase Row Level Security ready
+- Secure API key generation
+- Environment variable configuration
+
+**Need help?** Check the [documentation](docs/) or open an issue.
