@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Key, Menu, X } from "lucide-react";
+import { Key, Menu, X, User } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface LandingHeaderProps {
   isAuthenticated: boolean;
@@ -16,6 +17,7 @@ export function LandingHeader({
   onSignIn,
 }: LandingHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <header className="sticky top-0 z-50 h-16 flex items-center bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50">
@@ -52,13 +54,42 @@ export function LandingHeader({
           </Link>
         </nav>
 
-        {/* Auth Button - Desktop Only */}
-        <button
-          onClick={isAuthenticated ? onDashboard : onSignIn}
-          className="hidden sm:inline-block px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors whitespace-nowrap"
-        >
-          {isAuthenticated ? "Dashboard" : "Sign In"}
-        </button>
+        {/* Auth Section - Desktop Only */}
+        <div className="hidden sm:flex items-center gap-4">
+          {isAuthenticated && session?.user ? (
+            <>
+              <div className="flex items-center gap-2">
+                {session.user.image ? (
+                  <img
+                    src={session.user.image}
+                    alt={session.user.name || "Profile"}
+                    className="h-8 w-8 rounded-full"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-600">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                )}
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  {session.user.name}
+                </span>
+              </div>
+              <button
+                onClick={onDashboard}
+                className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors whitespace-nowrap"
+              >
+                Dashboard
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={onSignIn}
+              className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Sign In
+            </button>
+          )}
+        </div>
 
         {/* Mobile Menu Button */}
         <button

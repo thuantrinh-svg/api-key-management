@@ -15,8 +15,15 @@ export default function LandingPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const handleDashboard = () => router.push("/dashboard");
-  const handleSignIn = () => signIn("google");
+  const handleDashboard = () => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    } else {
+      // Sign in with callback URL to dashboard
+      signIn("google", { callbackUrl: "/dashboard" });
+    }
+  };
+  const handleSignIn = () => signIn("google", { callbackUrl: "/dashboard" });
   const isAuthenticated = status === "authenticated" && !!session;
 
   return (

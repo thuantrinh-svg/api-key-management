@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession, signIn } from "next-auth/react";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 import DashboardLayout from "../dashboard-layout";
 import { ApiKeyCard } from "../components/api-key-card";
 import { ApiKeyDialog } from "../components/api-key-dialog";
@@ -25,11 +25,8 @@ export default function DashboardPage() {
     copyToClipboard,
   } = useApiKeys();
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      signIn("google");
-    }
-  }, [status]);
+  // Removed auto-signin - middleware handles redirecting unauthenticated users
+  // This prevents auto-signin after signout which was causing the bug
 
   if (status === "loading") {
     return (
